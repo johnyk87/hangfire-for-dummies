@@ -10,10 +10,10 @@ namespace HangfireForDummies
         private const int RetryCount = 2;
 
         // Manual timeout used inside the job.
-        private const int ExecuteTimeoutInSeconds = 1 * 60;
+        private const int ExecuteTimeoutInSeconds = 60;
 
         // Concurrent execution timeout, used to wait for a distributed lock.
-        private const int DistributedLockTimeoutInSeconds = ExecuteTimeoutInSeconds + 30;
+        private const int DistributedLockTimeoutInSeconds = 30;
 
         private readonly ILogger logger;
 
@@ -36,6 +36,15 @@ namespace HangfireForDummies
                 "Starting job {jobName} [{jobId}]",
                 this.GetType().Name,
                 context.BackgroundJob.Id);
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                this.logger.Log(
+                    LogLevel.Warning,
+                    "Job {jobName} [{jobId}] is dead on arrival",
+                    this.GetType().Name,
+                    context.BackgroundJob.Id);
+            }
 
             try
             {

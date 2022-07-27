@@ -28,7 +28,7 @@ builder.Services
                     },
                     CheckConnection = false,
                     CheckQueuedJobsStrategy = CheckQueuedJobsStrategy.TailNotificationsCollection,
-                    InvisibilityTimeout = TimeSpan.FromMinutes(2), // TODO: play with me!
+                    InvisibilityTimeout = TimeSpan.FromSeconds(120), // TODO: play with me!
                 }))
     .AddHangfireServer(
         options =>
@@ -40,7 +40,6 @@ var app = builder.Build();
 
 // Setup middleware pipeline
 app.UseHangfireDashboard();
-app.MapGet("/", () => "Hello World!");
 
 // Register Hangfire jobs
 RecurringJob.AddOrUpdate<TimeoutJob>(
