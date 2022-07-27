@@ -33,7 +33,7 @@ builder.Services
     .AddHangfireServer(
         options =>
         {
-            options.WorkerCount = 1; // TODO: play with me!
+            options.WorkerCount = 2; // TODO: play with me!
         });
 
 var app = builder.Build();
@@ -46,6 +46,11 @@ app.MapGet("/", () => "Hello World!");
 RecurringJob.AddOrUpdate<TimeoutJob>(
     nameof(TimeoutJob),
     x => x.ExecuteAsync(null! ,CancellationToken.None),
+    Cron.Never);
+
+RecurringJob.AddOrUpdate<OtherTimeoutJob>(
+    nameof(OtherTimeoutJob),
+    x => x.ExecuteAsync(null!, CancellationToken.None),
     Cron.Never);
 
 app.Run();

@@ -13,11 +13,16 @@ namespace HangfireForDummies
         private const int ExecuteTimeoutInSeconds = 1 * 60;
 
         // Concurrent execution timeout, used to wait for a distributed lock.
-        private const int DistributedLockTimeoutInSeconds = ExecuteTimeoutInSeconds - 30;
+        private const int DistributedLockTimeoutInSeconds = ExecuteTimeoutInSeconds + 30;
 
         private readonly ILogger logger;
 
         public TimeoutJob(ILogger<TimeoutJob> logger)
+            : this((ILogger)logger)
+        {
+        }
+
+        protected TimeoutJob(ILogger logger)
         {
             this.logger = logger;
         }
@@ -28,7 +33,8 @@ namespace HangfireForDummies
         {
             this.logger.Log(
                 LogLevel.Information,
-                $"Starting job {nameof(TimeoutJob)} [{{jobId}}]",
+                "Starting job {jobName} [{jobId}]",
+                this.GetType().Name,
                 context.BackgroundJob.Id);
 
             try
@@ -43,7 +49,8 @@ namespace HangfireForDummies
                 this.logger.Log(
                     LogLevel.Error,
                     ex,
-                    $"Error during job {nameof(TimeoutJob)} [{{jobId}}]",
+                    "Error during job {jobName} [{jobId}]",
+                    this.GetType().Name,
                     context.BackgroundJob.Id);
 
                 throw;
@@ -52,7 +59,8 @@ namespace HangfireForDummies
             {
                 this.logger.Log(
                     LogLevel.Information,
-                    $"Exiting job {nameof(TimeoutJob)} [{{jobId}}]",
+                    "Exiting job {jobName} [{jobId}]",
+                    this.GetType().Name,
                     context.BackgroundJob.Id);
             }
         }
