@@ -10,19 +10,16 @@ namespace HangfireForDummies
         private const int RetryCount = 2;
 
         // Manual timeout used inside the job.
+        // TODO: play with me!
         private const int ExecuteTimeoutInSeconds = 60;
 
         // Concurrent execution timeout, used to wait for a distributed lock.
+        // TODO: play with me!
         private const int DistributedLockTimeoutInSeconds = 30;
 
         private readonly ILogger logger;
 
         public TimeoutJob(ILogger<TimeoutJob> logger)
-            : this((ILogger)logger)
-        {
-        }
-
-        protected TimeoutJob(ILogger logger)
         {
             this.logger = logger;
         }
